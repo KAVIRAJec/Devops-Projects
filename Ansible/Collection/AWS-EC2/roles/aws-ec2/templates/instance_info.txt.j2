@@ -1,0 +1,27 @@
+EC2 Instance Information
+========================
+
+Instance Name: {{ instance_name }}
+Instance ID: {{ ec2_instance.instances[0].instance_id }}
+Instance Type: {{ instance_type }}
+Region: {{ aws_region }}
+Availability Zone: {{ ec2_instance.instances[0].placement.availability_zone }}
+
+Network Information:
+- VPC ID: {{ vpc_id }}
+- Subnet ID: {{ public_subnet_id }}
+- Security Group: {{ security_group_id }}
+- Public IP: {{ ec2_instance.instances[0].public_ip_address }}
+- Private IP: {{ ec2_instance.instances[0].private_ip_address }}
+
+SSH Information:
+- SSH User: {{ ssh_user }}
+- Key Name: {{ key_name }}
+- SSH Command: ssh -i ~/.ssh/{{ key_name }}.pem {{ ssh_user }}@{{ ec2_instance.instances[0].public_ip_address }}
+
+Tags:
+{% for key, value in (common_tags | combine(instance_tags | default({}))).items() %}
+- {{ key }}: {{ value }}
+{% endfor %}
+
+Created: {{ ansible_date_time.iso8601 }}

@@ -1,0 +1,26 @@
+---
+- name: Update package cache
+  ansible.builtin.apt:
+    update_cache: yes
+    cache_valid_time: 3600
+  when: ansible_os_family == "Debian"
+
+- name: Install common packages
+  ansible.builtin.package:
+    name: "{{ common_packages }}"
+    state: present
+  when: ansible_os_family == "Debian"
+
+- name: Create Project Directory
+  ansible.builtin.file:
+    path: "/your-path/{{ project_name }}"
+    state: directory
+    mode: '0755'
+
+- name: Create Project user
+  ansible.builtin.user:
+    name: "{{ project_name }}"
+    state: true
+    shell: /bin/bash
+    home: "/home/{{ project_name }}"
+    create_home: no

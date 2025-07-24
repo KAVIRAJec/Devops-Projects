@@ -1,0 +1,51 @@
+---
+- name: Install Nginx
+  apt:
+    name: nginx
+    state: present
+
+- name: Remove default nginx site
+  file:
+    path: /etc/nginx/sites-enabled/default
+    state: absent
+  notify: restart nginx
+
+- name: Create frontend directory
+  file:
+    path: "{{ frontend_dir }}"
+    state: directory
+    owner: www-data
+    group: www-data
+    mode: '0755'
+
+- name: Copy frontend files
+  template:
+    src: "{{ item }}"
+    dest: "{{ frontend_dir }}/{{ item | basename | regex_replace('\\.j2$', '') }}"
+    owner: www-data
+    group: www-data
+    mode: '0644'
+  loop:
+    - index.html.j2
+    - app.js.j2
+    - style.css.j2
+
+- name: Configure Nginx for frontend
+  template:
+    src: nginx.conf.j2
+    dest: "/etc/nginx/sites-available/{{ app_name }}"
+    mode: '0644'
+  notify: restart nginx
+
+- name: Enable Nginx site
+  file:
+    src: "/etc/nginx/sites-available/{{ app_name }}"
+    dest: "/etc/nginx/sites-enabled/{{ app_name }}"
+    state: link
+  notify: restart nginx
+
+- name: Start and enable Nginx
+  systemd:
+    name: nginx
+    state: started
+    enabled: yes

@@ -1,0 +1,25 @@
+---
+# EC2 Configuration
+instance_name: "ansible-demo-instance"
+instance_type: "t2.micro"
+ami_id: "ami-0c02fb55956c7d316"  # Amazon Linux 2 AMI
+ssh_user: "ec2-user"
+
+# Storage
+volume_size: 20
+volume_type: "gp2"
+delete_on_termination: true
+
+# Network
+assign_public_ip: true
+monitoring: false
+
+# User Data Script
+user_data: |
+  #!/bin/bash
+  yum update -y
+  yum install -y docker git htop
+  systemctl start docker
+  systemctl enable docker
+  usermod -a -G docker ec2-user
+  echo "Instance setup completed" > /tmp/setup-complete.txt

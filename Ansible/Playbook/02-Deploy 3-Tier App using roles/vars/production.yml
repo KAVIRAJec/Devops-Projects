@@ -1,0 +1,12 @@
+debug_mode: false
+
+# Database settings for prod
+db_max_connections: 100
+db_backup_enabled: true
+
+# Backend settings for prod
+backend_workers: 4
+backend_debug: false
+
+# Frontend settings for prod
+frontend_api_url: "https://api.{{ app_name }}.com"

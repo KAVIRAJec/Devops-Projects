@@ -1,0 +1,33 @@
+---
+- name: Create App user
+  user:
+    name: "{{ app_user }}"
+    group: "{{ app_group }}"
+    shell: /bin/bash
+    home: "/home/{{ app_user }}"
+    system: yes
+    create_home: yes
+
+- name: Create App group
+  group:
+    name: "{{ app_group }}"
+    system: yes
+
+- name: Install common packages
+  apt:
+    name: "{{ common_packages }}"
+    state: present
+    update_cache: yes
+
+- name: Create App directories
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ app_user }}"
+    group: "{{ app_group }}"
+    mode: '0755'
+  loop:
+    - "/opt/{{ app_name }}"
+    - "/var/www/{{ app_name }}"
+    - "/etc/{{ app_name }}"
+  when: ansible_os_family == "Debian"

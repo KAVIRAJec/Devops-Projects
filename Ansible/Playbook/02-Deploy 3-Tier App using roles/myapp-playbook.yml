@@ -1,0 +1,44 @@
+---
+- name: Deploy 3-Tier Application
+  hosts: all
+  become: true
+  gather_facts: true
+
+  vars_files:
+    - vars/main.yml
+    - vars/{{ env }}.yml
+
+  pre_tasks:
+    - name: Update package cache
+      apt:
+        update_cache: yes
+
+  roles:
+    - common
+
+- name: Deploy Database
+  hosts: dbhosts
+  become: true
+  roles:
+    - database
+  tags:
+    - database
+    - db
+
+- name: Deploy Backend
+  hosts: backendhosts
+  become: true
+  roles:
+    - backend
+  tags:
+    - backend
+    - api
+
+- name: Deploy Frontend
+  hosts: frontendhosts
+  become: true
+  roles:
+    - frontend
+  tags:
+    - frontend
+    - web

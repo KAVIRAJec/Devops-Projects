@@ -1,0 +1,8 @@
+---
+- name: Deploy Docker containers
+  hosts: docker_hosts
+  gather_facts: yes
+
+  roles:
+    - common
+    - docker

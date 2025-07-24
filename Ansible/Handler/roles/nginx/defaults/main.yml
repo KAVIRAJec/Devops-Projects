@@ -1,0 +1,16 @@
+---
+nginx_user: www-data
+nginx_worker_processes: auto
+nginx_worker_connections: 1024
+nginx_keepalive_timeout: 65
+ngnix_server_tokens: off
+
+nginx_sites:
+  - name: default
+    template: default.conf.j2
+    server_name: localhost
+    root: "{{ services.nginx.root }}"
+    index: index.html index.htm
+    listen: "{{ services.nginx.port }}"
+
+nginx_upstreams: []

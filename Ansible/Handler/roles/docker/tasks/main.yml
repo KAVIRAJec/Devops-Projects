@@ -1,0 +1,71 @@
+---
+- name: Install Docker dependencies
+  ansible.builtin.package:
+    name:
+      - apt-transport-https
+      - ca-certificates
+      - curl
+      - gnupg
+      - lsb-release
+    state: present
+
+- name: Add Docker GPG key
+  apt_key:
+    url: https://download.docker.com/linux/ubuntu/gpg
+    state: present
+
+- name: Add Docker repository
+  apt_repository:
+    repo: "deb [arch={{ ansible_architecture }}] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable"
+    state: present
+  
+- name: Install Docker Engine
+  ansible.builtin.package:
+    name: 
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
+    state: present
+    notify: start docker
+  
+- name: Add user to docker group
+  ansible.builtin.user:
+    name: "{{ item }}"
+    group: docker
+    append: true
+  loop: "{{ docker_users }}"
+  notify: restart docker
+
+- name: Install Docker Compose
+  get_url:
+    url: "https://github.com/docker/compose/releases/download/{{ docker_compose_version }}/docker-compose-{{ ansible_system }}-{{ ansible_architecture }}"
+    dest: /usr/local/bin/docker-compose
+    mode: '0755'
+
+- name: Create docker application directories
+  file:
+    path: "/opt/{{ project_name }}/docker/{{ item.name }}"
+    state: directory
+    mode: '0755'
+  loop: "{{ docker_apps }}"
+
+- name: Create docker-compose files
+  template:
+    src: docker-compose.yml.j2
+    dest: "/opt/{{ project_name }}/docker/{{ item.name }}/docker-compose.yml"
+    mode: '0644'
+  loop: "{{ docker_apps }}"
+  notify: restart docker containers
+
+- name: Create web content for containers
+  template:
+    src: docker-index.html.j2
+    dest: "/opt/{{ project_name }}/docker/web/index.html"
+    mode: '0644'
+  notify: restart docker containers
+
+- name: Start Docker containers
+  docker_compose:
+    project_src: "/opt/{{ project_name }}/docker/{{ item.name }}"
+    state: present
+  loop: "{{ docker_apps }}"

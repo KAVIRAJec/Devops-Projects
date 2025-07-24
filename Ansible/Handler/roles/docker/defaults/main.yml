@@ -1,0 +1,16 @@
+---
+docker_users:
+  - "{{ ansible_user }}"
+
+docker_compose_version: "{{ services.docker.compose_version }}"
+
+docker_apps:
+  - name: web-app
+    image: nginx:alpine
+    ports:
+      - "8080:80"
+    volumes:
+      - "/opt/{{ project_name }}/docker/web:/usr/share/nginx/html:ro"
+    environment:
+      - NGINX_HOST=localhost
+      - NGINX_PORT=80

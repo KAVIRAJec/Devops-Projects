@@ -1,0 +1,35 @@
+---
+- name: Cleanup AWS Resources
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  
+  vars_files:
+    - vars/aws-config.yml
+    - vars/ec2-config.yml
+
+  tasks:
+    - name: Terminate EC2 instances
+      amazon.aws.ec2_instance:
+        name: "{{ instance_name }}"
+        region: "{{ aws_region }}"
+        state: absent
+        wait: true
+
+    - name: Delete Security Group
+      amazon.aws.ec2_security_group:
+        name: "{{ security_group_name }}"
+        region: "{{ aws_region }}"
+        state: absent
+
+    - name: Delete Key Pair
+      amazon.aws.ec2_key:
+        name: "{{ key_name }}"
+        region: "{{ aws_region }}"
+        state: absent
+
+    - name: Delete VPC (this will delete subnets, route tables, IGW)
+      amazon.aws.ec2_vpc_net:
+        name: "{{ vpc_name }}"
+        cidr_block: "{{ vpc_cidr }}"
+        region: "{{

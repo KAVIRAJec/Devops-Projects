@@ -1,0 +1,25 @@
+---
+- name: Provision AWS EC2 Instance
+  hosts: localhost
+  connections: local
+  gather_facts: false
+
+  vars_files:
+    - vars/aws-config.yml
+    - vars/ec2-config.yml
+    - vars/{{ env_name | default('dev') }}.yml
+
+  roles:
+    - aws-vpc
+    - aws-security
+    - aws-ec2
+
+  post_tasks:
+    - name: Display EC2 instance details
+      debug:
+        msg:
+          - "Environment: {{ deployment_environment }}"
+          - "Instance ID: {{ ec2_instance.instances[0].instance_id }}"
+          - "Public IP: {{ ec2_instance.instances[0].public_ip_address }}"
+          - "Private IP: {{ ec2_instance.instances[0].private_ip_address }}"
+          - "SSH Command: ssh -i ~/.ssh/{{ key_name }}.pem {{ ssh_user }}@{{ ec2_instance.instances[0].public_ip_address }}"

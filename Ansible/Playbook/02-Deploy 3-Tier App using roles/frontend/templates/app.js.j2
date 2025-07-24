@@ -1,0 +1,32 @@
+const API_URL = '{{ frontend_api_url }}';
+
+async function testAPI() {
+    try {
+        const response = await fetch(`${API_URL}/health`);
+        const data = await response.json();
+        document.getElementById('api-result').innerHTML = 
+            `<p style="color: green;">✅ API is working! Response: ${JSON.stringify(data)}</p>`;
+    } catch (error) {
+        document.getElementById('api-result').innerHTML = 
+            `<p style="color: red;">❌ API Error: ${error.message}</p>`;
+    }
+}
+
+async function loadUsers() {
+    try {
+        const response = await fetch(`${API_URL}/users`);
+        const users = await response.json();
+        const usersList = document.getElementById('users-list');
+        usersList.innerHTML = users.map(user => 
+            `<div class="user-card">
+                <h3>${user.username}</h3>
+                <p>${user.email}</p>
+            </div>`
+        ).join('');
+    } catch (error) {
+        console.error('Error loading users:', error);
+    }
+}
+
+// Load users when page loads
+document.addEventListener('DOMContentLoaded', loadUsers);

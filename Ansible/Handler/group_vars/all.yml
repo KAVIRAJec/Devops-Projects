@@ -1,0 +1,29 @@
+---
+# Global variables
+ansible_user: "{{ ansible_user | default('ansible') }}"
+project_name: "ansible-demo"
+env_name: "development"
+
+# Common variables
+common_packages:
+  - curl
+  - wget
+  - git
+  - htop
+  - vim
+  - unzip
+
+# Service Configurations
+services:
+  nginx:
+    enabled: true
+    config_file: "/etc/nginx/nginx.conf"
+    port: 80
+    ssl_port: 443
+  docker: 
+    enabled: true
+    compose_version: "1.29.2"
+  nodejs:
+    enabled: true
+    version: "16.x"
+    port: 3000

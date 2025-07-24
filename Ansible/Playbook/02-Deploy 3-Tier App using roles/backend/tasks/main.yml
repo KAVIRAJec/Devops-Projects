@@ -1,0 +1,49 @@
+---
+- name: Install Node.js and npm
+  apt:
+    name:
+      - nodejs
+      - npm
+    state: present
+
+- name: Create backend directory
+  file:
+    path: "{{ backend_dir }}"
+    state: directory
+    owner: "{{ app_user }}"
+    group: "{{ app_group }}"
+    mode: '755'
+
+- name: Copy backend application
+  template:
+    src: "{{ item }}"
+    dest: "{{ backend_dir }}/{{ item | basename | regex_replace('\\.j2$', '') }}"
+    owner: "{{ app_user }}"
+    group: "{{ app_group }}"
+    mode: '0644'
+  loop:
+    - app.js.j2
+    - package.json.j2
+  notify: restart backend
+
+- name: Install npm dependencies
+  npm:
+    path: "{{ backend_dir }}"
+    state: present
+  become_user: "{{ app_user }}"
+
+- name: Create backend service file
+  template:
+    src: backend.service.j2
+    dest: "/etc/systemd/system/{{ app_name }}-backend.service"
+    mode: '0644'
+  notify:
+    - reload systemd
+    - restart backend
+
+- name: Start and enable backend service
+  systemd:
+    name: "{{ app_name }}-backend"
+    state: started
+    enabled: yes
+    daemon_reload: yes

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ project_name | title }} - Docker</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(45deg, #FF6B6B, #4ECDC4);
+            margin: 0;
+            padding: 50px;
+            color: white;
+            text-align: center;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 40px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        h1 { font-size: 3em; margin-bottom: 20px; }
+        .docker-info {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🐳 Docker Container</h1>
+        <div class="docker-info">
+            <h2>{{ project_name | title }}</h2>
+            <p><strong>Environment:</strong> {{ environment }}</p>
+            <p><strong>Container:</strong> Running in Docker</p>
+            <p><strong>Deployed:</strong> {{ ansible_date_time.iso8601 }}</p>
+        </div>
+        <p>Managed by Ansible Handlers! 🚀</p>
+    </div>
+</body>
+</html>

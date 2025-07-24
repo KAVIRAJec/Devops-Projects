@@ -1,0 +1,25 @@
+---
+- name: start nginx
+  ansible.builtin.systemd:
+    name: nginx
+    state: started
+    enabled: true
+
+- name: reload nginx
+  ansible.builtin.systemd:
+    name: nginx
+    state: reloaded
+
+- name: stop nginx
+  ansible.builtin.systemd:
+    name: nginx
+    state: stopped
+
+- name: restart nginx
+  ansible.builtin.systemd:
+    name: nginx
+    state: restarted
+
+- name: test nginx config
+  command: nginx -t
+  changed_when: false

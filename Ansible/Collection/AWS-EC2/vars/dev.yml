@@ -1,0 +1,18 @@
+---
+# Environment Configuration
+env_name: "dev"
+deployment_environment: "development"
+
+instance_type: "t3.micro"
+volume_size: 20
+volume_type: "gp3"
+monitoring: false
+
+# Allow SSH from anywhere (for development only)
+allowed_cidr_blocks:
+  - "0.0.0.0/0"
+
+instance_tags:
+  Environment: "development"
+  AutoTerminate: "enabled"
+  BackupRequired: "false"

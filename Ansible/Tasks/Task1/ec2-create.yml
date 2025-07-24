@@ -1,0 +1,23 @@
+---
+- hosts: localhost
+  connection: local
+
+  tasks:
+    - name: Create EC2 Instance
+      amazon.aws.ec2_instance:
+        name: "{{ item.name }}"
+        key_name: "my_key_pair"
+        instance_type: "t2.micro"
+        image: "{{ item.image }}"
+        security_groups: default
+        region: ap-south-1
+        aws_access_key: "{{ ec2_access_key }}" # From vault defined
+        aws_secret_key: "{{ ec2_secret_key }}" # From vault defined
+        network:
+          assign_public_ip: true
+        tags:
+          environment: "{{ item.name }}"      
+      loop:
+        - { name: "Instance-1", image: "ami-0e1d06225679bc1c5"}
+        - { name: "Instance-2", image: "ami-0f58b397bc5c1f2e8" }
+        - { name: "Instance-3", image: "ami-0f58b397bc5c1f2e8" }

@@ -1,0 +1,8 @@
+---
+- name: Deploy Nginx only
+  hosts: webservers
+  gather_facts: yes
+  
+  roles:
+    - common
+    - nginx

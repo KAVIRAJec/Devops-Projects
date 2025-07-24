@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ app_name | title }} - {{ environment | title }}</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>{{ app_name | title }}</h1>
+            <p>Environment: {{ environment | title }}</p>
+        </header>
+        
+        <main>
+            <div class="api-section">
+                <h2>Test API Connection</h2>
+                <button onclick="testAPI()">Test Backend API</button>
+                <div id="api-result"></div>
+            </div>
+            
+            <div class="users-section">
+                <h2>Users</h2>
+                <div id="users-list"></div>
+            </div>
+        </main>
+    </div>
+    
+    <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,48 @@
+---
+- name: Install Nginx
+  ansible.builtin.package:
+    name: nginx
+    state: present
+  notify: start nginx
+
+- name: Remove Default Nginx Configuration
+  ansible.builtin.file:
+    path: /etc/nginx/sites-enabled/default
+    state: absent
+  notify: reload nginx
+
+- name: Create Nginx main configuration
+  ansible.builtin.template:
+    src: nginx.conf.j2
+    dest: "{{ services.nginx.config_file }}"
+    backup: yes
+    validate: nginx -t -c %s
+  notify: reload nginx 
+
+- name: Create Nginx site Configuration
+  ansible.builtin.template:
+    src: "{{ item.template }}"
+    dest: "/etc/nginx/sites-available/{{ item.name }}"
+    backup: yes
+  loop: "{{ nginx_sites }}"
+  notify: reload nginx
+
+- name: Enable Nginx site
+  ansible.builtin.file:
+    src: "/etc/nginx/sites-available/{{ item.name }}"
+    dest: "/etc/nginx/sites-enabled/{{ item.name }}"
+    state: link
+  loop: "{{ nginx_sites }}"
+  notify: reload nginx
+
+- name: Create custom index file
+  ansible.builtin.template:
+    src: index.html.j2
+    dest: /var/www/html/index.html
+    mode: '0644'
+    
+- name: Ensure Nginx is started and enabled
+  ansible.builtin.systemd:
+    name: nginx
+    state: started
+    enabled: true

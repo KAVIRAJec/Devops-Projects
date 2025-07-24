@@ -1,0 +1,28 @@
+---
+# AWS Configuration
+aws_region: us-east-1
+availability_zone: "{{ aws_region }}a"
+
+# VPC Configuration
+vpc_name: "ansible-demo-vpc"
+vpc_cidr: "10.0.0.0/16"
+public_subnet_cidr: "10.0.1.0/24"
+private_subnet_cidr: "10.0.2.0/24"
+
+# Internet Gateway
+igw_name: "ansible-demo-igw"
+
+# Route Table
+route_table_name: "ansible-demo-rt-public"
+
+# Security Group
+security_group_name: "ansible-demo-sg"
+
+# Key Pair
+key_name: "ansible-demo-key"
+
+# Tags
+common_tags:
+  Project: "Ansible-Demo"
+  CreatedBy: "Ansible"
+  Environment: "{{ deployment_environment | default('dev') }}"

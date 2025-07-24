@@ -1,0 +1,12 @@
+debug_mode: true
+
+# Database settings for dev
+db_host: "localhost"
+db_max_connections: 20
+
+# Backend settings for dev
+backend_workers: 2
+backend_debug: true
+
+# Frontend settings for dev
+frontend_api_url: "http://localhost:{{ backend_port }}/api"
